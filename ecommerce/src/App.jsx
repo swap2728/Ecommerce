@@ -33,6 +33,9 @@ import ForgotPasswordPage from './pages/ForgetPasswordPage.jsx'
 import ProtectedAdmin from './features/auth/component/ProtectedAdmin.jsx'
 import AdminHomePage from './pages/adminHomePage.jsx'
 import AdminProductDetailPage from './pages/adminProductDetailPage.jsx'
+import ProductForm from './features/admin/component/ProductForms.jsx'
+import AdminProductFormPage from './pages/AdminProductFormPage.jsx'
+import AdminOrdersPage from './pages/AdminOrdersPage.jsx'
 const router = createBrowserRouter([
   {
     path: "/",
@@ -67,6 +70,14 @@ const router = createBrowserRouter([
     element: <ProtectedAdmin><AdminProductDetailPage></AdminProductDetailPage></ProtectedAdmin>
   },
   {
+    path: "/admin/product-form/",
+    element: <ProtectedAdmin><AdminProductFormPage></AdminProductFormPage></ProtectedAdmin>
+  },
+  {
+    path: "/admin/product-form/edit/:id",
+    element: <ProtectedAdmin><AdminProductFormPage></AdminProductFormPage></ProtectedAdmin>
+  },
+  {
     path:'/order-success/:id',
     element:(
       <OrderSuccessPage></OrderSuccessPage>
@@ -76,6 +87,15 @@ const router = createBrowserRouter([
     path:'/orders',
     element:(
       <UserOrdersPage></UserOrdersPage>
+    ),
+  },
+  {
+    path:'/admin/orders',
+    element:(
+      <ProtectedAdmin>
+        <AdminOrdersPage></AdminOrdersPage>
+      </ProtectedAdmin>
+      
     ),
   },
   {

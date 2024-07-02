@@ -253,7 +253,7 @@ export default function AdminProductList() {
                 <div className="lg:col-span-3 ">
                    <div>
                    <Link
-                    to=""
+                    to="/admin/product-form"
                     className="rounded-md mx-10 my-5 bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                   >
                     Add New Product
@@ -499,7 +499,12 @@ function ProductGrid({ products,filters }) {
                   <p className="text-sm font-medium text-gray-900">
                     {product.price}
                   </p>
+                  
+                  
                 </div>
+                {product.deleted && 
+                    <p className="text-5m text-red-400">Product deleted</p>
+                  }
               </div>
             </Link>
             <div className="mt-5">

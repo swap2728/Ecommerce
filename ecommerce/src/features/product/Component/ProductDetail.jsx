@@ -4,7 +4,7 @@ import { Radio, RadioGroup } from '@headlessui/react'
 import {  selectProductById , fetchProductByIdAsync } from '../ProductSlice'
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { addToCartAsync } from '../../cart/cartSlice';
+import { addToCartAsync, selectItems } from '../../cart/cartSlice';
 import { selectLoggedInUser } from '../../auth/authSlice';
 
 
@@ -41,13 +41,19 @@ export default function ProductDetail() {
   const [selectedSize, setSelectedSize] = useState(sizes[2])
   const product = useSelector(selectProductById)[0];
   const dispatch = useDispatch();
+  const items = useSelector(selectItems);
   const params = useParams();
   const user = useSelector(selectLoggedInUser)
   function handleCart(e){
     e.preventDefault();
-    const newItem = {...product ,quantity:1,user:user.id};
-    delete newItem['id'];
-    dispatch( addToCartAsync(newItem))
+    if( items.findIndex(item=>item.productId===product.id)<0){
+      const newItem = {...product, productId:product.id,quantity:1,user:user.id};
+      delete newItem['id'];
+      dispatch( addToCartAsync(newItem))
+    }
+    else {
+      alert('already added')
+    }
   }
 
   useEffect(()=>{
