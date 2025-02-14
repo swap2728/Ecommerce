@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { selectError, selectLoggedInUser ,checkUserAsync } from "../authSlice";
+import { selectError, selectLoggedInUser ,loginUserAsync } from "../authSlice";
 import { Navigate } from "react-router-dom";
 function Login(){
     const {
@@ -35,8 +35,9 @@ function Login(){
         <form
             noValidate
             onSubmit={handleSubmit((data) => {
+              console.log(data)
               dispatch(
-                checkUserAsync({ email: data.email, password: data.password })
+                loginUserAsync({ email: data.email, password: data.password })
               );
             })}
             className="space-y-6"
@@ -87,7 +88,7 @@ function Login(){
                 {errors.password && <p className='text-red-500' >{errors.password.message}</p>}
                 {
                     error && (
-                        <p className="text-red-500" >{error.message}</p>
+                        <p className="text-red-500" >{error || error.message}</p>
                     )
                 }
               </div>

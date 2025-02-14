@@ -7,7 +7,7 @@ const initialState = {
   brands:[],
   categories:[],
   totalItems:0,
-  selectedProduct:[]
+  selectedProduct:null
 };
 
 export const createProductAsync = createAsyncThunk(
@@ -38,9 +38,9 @@ export const fetchProductByIdAsync = createAsyncThunk(
   
 export const fetchProductsByFiltersAsync = createAsyncThunk(
   'product/fetchProductsByFilters',
-  async ({filter,sort,pagination}) => {
+  async ({filter,sort,pagination ,admin}) => {
     // console.log('done')
-    const response = await fetchProductsByFilters(filter,sort,pagination);
+    const response = await fetchProductsByFilters(filter,sort,pagination,admin);
     // The value we return becomes the `fulfilled` action payload
     return response.data;
   }
@@ -121,7 +121,9 @@ export const productSlice = createSlice({
       })
       .addCase(fetchProductByIdAsync.fulfilled, (state, action) => {
         state.status = 'idle';
+        // console.log(state.selectedProduct)
         state.selectedProduct = action.payload;
+        console.log("selectis:",state.selectedProduct)
       })
       .addCase(createProductAsync.pending, (state) => {
         state.status = 'loading';
@@ -152,4 +154,6 @@ export const selectAllItems = (state) => state.product.totalItems;
 export const selectAllBrands = (state) => state.product.brands;
 export const selectProductById = (state) => state.product.selectedProduct;
 export const selectAllCategories = (state) => state.product.categories;
+export const selectProductListStatus = (state) => state.product.status;
+
 export default productSlice.reducer;

@@ -36,16 +36,17 @@ const products = [
   },
   // More products...
 ];
-import { selectItems, updateCartAsync ,deleteItemFromCartAsync } from "./cartSlice";
+import { selectItems, updateCartAsync ,deleteItemFromCartAsync, selectCartLoaded } from "./cartSlice";
 function Cart() {
   const [open, setOpen] = useState(true);
   const items = useSelector(selectItems);
-  const totalAmount = items.reduce((amount,item)=>item.price*item.quantity+amount,0)
+  const cartLoaded = useSelector(selectCartLoaded);
+  const totalAmount = items.reduce((amount,item)=>item.product.price*item.quantity+amount,0)
   const totalItem = items.reduce((total,item)=>item.quantity+total,0)
   const dispatch = useDispatch();
 
   const handleQuantity = (e,product)=>{
-    dispatch( updateCartAsync({...product ,quantity:+e.target.value}))
+    dispatch( updateCartAsync({id:product.id ,quantity:+e.target.value}))
   }
   const handleRemove =(e, id)=>{
     dispatch(deleteItemFromCartAsync(id))
@@ -55,7 +56,8 @@ function Cart() {
 
   return (
     <>
-    {!items.length && <Navigate to='/'replace={true}></Navigate>}
+    {!items.length && cartLoaded && <Navigate to='/'replace={true}></Navigate>}
+    {/* { cur} */}
     <div className="mx-auto max-w-7xl mt-24 px-4 sm:px-6 lg:px-8 bg-white">
       <div className="mt-8">
         <div className="flow-root">
@@ -63,12 +65,12 @@ function Cart() {
             Cart
           </h1>
           <ul role="list" className="-my-6 divide-y divide-gray-200">
-            {items && items.map((product) => (
-              <li key={product.id} className="flex py-6">
+            {items && items.map((item) => (
+              <li key={item.id} className="flex py-6">
                 <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                   <img
-                    src={product.thumbnail}
-                    alt={product.title}
+                    src={item.product.thumbnail}
+                    alt={item.product.title}
                     className="h-full w-full object-cover object-center"
                   />
                 </div>
@@ -77,12 +79,12 @@ function Cart() {
                   <div>
                     <div className="flex justify-between text-base font-medium text-gray-900">
                       <h3>
-                        <a href={product.href}>{product.title}</a>
+                        <a href={item.product.id}>{item.product.title}</a>
                       </h3>
-                      <p className="ml-4">{product.price}</p>
+                      <p className="ml-4">{item.product.price}</p>
                     </div>
                     <p className="mt-1 text-sm text-gray-500">
-                      {product.price}
+                      {item.product.price}
                     </p>
                   </div>
                   <div className="flex flex-1 items-end justify-between text-sm">
@@ -93,7 +95,7 @@ function Cart() {
                           >
                             Qty
                           </label>
-                    <select onChange={(e)=>handleQuantity(e,product)} value={product.quantity} >
+                    <select onChange={(e)=>handleQuantity(e,item)} value={item.quantity} >
                         <option value='1'>1</option>
                         <option value='2'>2</option>
                         <option value='3'>3</option>
@@ -102,9 +104,18 @@ function Cart() {
                     </select>
                     </div>
                     <div className="flex">
+                    {/* <Modal
+                      title={`Delete ${product.product.title}`}
+                      message="Are you sure you want to delete this Cart item ?"
+                      dangerOption="Delete"
+                      cancelOption="Cancel"
+                      dangerAction={(e) => handleRemove(e, product.id)}
+                      cancelAction={()=>setOpenModal(null)}
+                      showModal={openModal === product.id}
+                      ></Modal> */}
                       <button
                         type="button"
-                        onClick={e=>handleRemove(e,product.id)}
+                        onClick={e=>handleRemove(e,item.id)}
                         className="font-medium text-indigo-600 hover:text-indigo-500"
                       >
                         Remove

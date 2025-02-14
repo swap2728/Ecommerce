@@ -1,6 +1,6 @@
 export function createUser(userData) {
     return new Promise(async (resolve) => {
-      const response = await fetch('http://localhost:8080/users', {
+      const response = await fetch('/auth/signup', {
         method: 'POST',
         body: JSON.stringify(userData),
         headers: { 'content-type': 'application/json' },
@@ -12,29 +12,56 @@ export function createUser(userData) {
   }
 
 
-  export function checkUser(loginInfo) {
+  export function loginUser(loginInfo) {
     return new Promise(async (resolve, reject) => {
-      const email = loginInfo.email;
-      const password = loginInfo.password;
-      const response = await fetch('http://localhost:8080/users?email=' + email);
-      const data = await response.json();
-      console.log(data, data[0].password , password)
-      if (data.length) {
-        if (password === data[0].password) {
-          resolve({ data: data[0] });
-        } else {
-          reject({ message: 'wrong credentials' });
+      try{
+        const response = await fetch('/auth/login',{
+          method: 'POST',
+          body: JSON.stringify(loginInfo),
+          headers: { 'content-type': 'application/json' },
+        });
+        
+        if(response.ok){
+          const data = await response.json();
+          
+          console.log(data)
+        resolve({ data});
         }
-      } else {
-        reject({ message: 'user not found' });
+        else {
+          const err = await response.text();
+         
+        reject({ err});
+        }
+      }
+      catch(err){
+        // console.log(err)
+        reject({err});
       }
       // TODO: on server it will only return some info of user (not password)
     });
   }
 
+  export function checkAuth() {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const response = await fetch('/auth/check');
+        if (response.ok) {
+          const data = await response.json();
+          resolve({ data });
+        } else {
+          const error = await response.text();
+          reject(error);
+        }
+      } catch (error) {
+        reject( error );
+      }
+  
+    });
+  }
+
   export function updateUser(update) {
     return new Promise(async (resolve) => {
-      const response = await fetch('http://localhost:8080/users/'+update.id, {
+      const response = await fetch('//users/'+update.id, {
         method: 'PATCH',
         body: JSON.stringify(update),
         headers: { 'content-type': 'application/json' },
@@ -45,8 +72,26 @@ export function createUser(userData) {
     });
   }
 
-  export function signOut(userId){
-    return new Promise(async (resolve)=>{
-      resolve({data:'success'});
-    })
+  // export function signOut(userId){
+  //   return new Promise(async (resolve)=>{
+  //     resolve({data:'success'});
+  //   })
+  // }
+
+  export function signOut() {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const response = await fetch('//users/auth/logout');
+        if (response.ok) {
+          resolve({ data:'success' });
+        } else {
+          const error = await response.text();
+          reject(error);
+        }
+      } catch (error) {
+        console.log(error)
+        reject( error );
+      }
+    });
   }
+  

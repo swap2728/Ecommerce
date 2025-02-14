@@ -22,7 +22,7 @@ import ProductDetailPage from './pages/ProductDetailPage.jsx'
 import Protected from './features/auth/component/Protected.jsx'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchItemsByUserIdAsync } from './features/cart/cartSlice.jsx'
-import { selectLoggedInUser } from './features/auth/authSlice.jsx'
+import { checkAuthAsync, selectLoggedInUser, selectUserChecked } from './features/auth/authSlice.jsx'
 import PageNotFound from './pages/404.jsx'
 import OrderSuccessPage from './pages/orderSuccessPage.jsx'
 import UserOrders from './features/user/componenet/UserOrders.jsx'
@@ -36,10 +36,14 @@ import AdminProductDetailPage from './pages/adminProductDetailPage.jsx'
 import ProductForm from './features/admin/component/ProductForms.jsx'
 import AdminProductFormPage from './pages/AdminProductFormPage.jsx'
 import AdminOrdersPage from './pages/AdminOrdersPage.jsx'
+import LogOut from './features/auth/component/LogOut.jsx'
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Protected><Home></Home></Protected>
+    element: 
+    <Protected>
+      <Home></Home>
+       </Protected>
   },
   {
     path: "/admin",
@@ -48,6 +52,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <LoginPage></LoginPage>
+  },
+  {
+    path: '/logout',
+    element: <LogOut></LogOut>,
   },
   {
     path: "/signup",
@@ -65,13 +73,21 @@ const router = createBrowserRouter([
     path: "/product-detail/:id",
     element: <Protected><ProductDetailPage></ProductDetailPage></Protected>
   },
+  // {
+  //   path: "/stripe-checkout/",
+  //   element: <Protected><ProductDetailPage></ProductDetailPage></Protected>
+  // },
   {
     path: "/admin/product-detail/:id",
     element: <ProtectedAdmin><AdminProductDetailPage></AdminProductDetailPage></ProtectedAdmin>
   },
   {
     path: "/admin/product-form/",
-    element: <ProtectedAdmin><AdminProductFormPage></AdminProductFormPage></ProtectedAdmin>
+    element: 
+            <ProtectedAdmin>
+              <AdminProductFormPage>
+              </AdminProductFormPage>
+             </ProtectedAdmin>
   },
   {
     path: "/admin/product-form/edit/:id",
@@ -84,7 +100,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path:'/orders',
+    path:'/my-orders',
     element:(
       <UserOrdersPage></UserOrdersPage>
     ),
@@ -94,7 +110,7 @@ const router = createBrowserRouter([
     element:(
       <ProtectedAdmin>
         <AdminOrdersPage></AdminOrdersPage>
-      </ProtectedAdmin>
+       </ProtectedAdmin>
       
     ),
   },
@@ -123,20 +139,25 @@ function App() {
 
   const dispatch = useDispatch();
   const user = useSelector(selectLoggedInUser);
+  const userChecked = useSelector(selectUserChecked);
+
+
+  useEffect(()=>{
+    dispatch(checkAuthAsync())
+  },[dispatch])
   useEffect(()=>{
     if(user){
-      console.log(user.id)
-      dispatch(fetchItemsByUserIdAsync(user.id))
+      // console.log(user.id)
+      dispatch(fetchItemsByUserIdAsync())
       // dispatch(fetchLoggedInUserOrdersAsync(user.id))
-      dispatch(fetchLoggedInUserAsync(user.id))
+      dispatch(fetchLoggedInUserAsync())
     }
   },[dispatch,user])
 
   return (
+    // <div><AdminProductDetailPage></AdminProductDetailPage></div>
     <div className='App'>
-      <RouterProvider router={router} />
-      {/* <Cart></Cart> */}
-      {/* <LoginPage></LoginPage> */}
+      { userChecked &&  <RouterProvider router={router} />}
     </div>
   );
 }

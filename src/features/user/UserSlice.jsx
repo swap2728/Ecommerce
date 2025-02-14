@@ -11,8 +11,8 @@ const initialState = {
 
 export const fetchLoggedInUserOrdersAsync = createAsyncThunk(
   'user/fetchLoggedInUserOrders',
-  async (userid) => {
-    const response = await fetchLoggedInUserOrders(userid);
+  async () => {
+    const response = await fetchLoggedInUserOrders();
     // The value we return becomes the `fulfilled` action payload
     return response.data;
   }
@@ -20,8 +20,8 @@ export const fetchLoggedInUserOrdersAsync = createAsyncThunk(
 
 export const fetchLoggedInUserAsync = createAsyncThunk(
     'user/fetchLoggedInUser',
-    async (id) => {
-      const response = await fetchLoggedInUser(id);
+    async () => {
+      const response = await fetchLoggedInUser();
       // The value we return becomes the `fulfilled` action payload
       return response.data;
     }
@@ -69,7 +69,8 @@ export const userSlice = createSlice({
         state.status = 'idle';
         // this info can be different or more from logged-in User info
         state.userInfo = action.payload;
-      });
+      });9 
+
   },
 });
 

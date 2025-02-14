@@ -8,7 +8,8 @@ import { addToCart ,fetchItemsByUserId ,updateCart,deleteItemFromCart ,resetCart
 const initialState = {
     // value: 0,
     status: 'idle',
-    items:[]
+    items:[],
+    cartLoader:false
   };
 
   export const addToCartAsync = createAsyncThunk(
@@ -21,8 +22,8 @@ const initialState = {
 
   export const fetchItemsByUserIdAsync = createAsyncThunk(
     'cart/fetchItemsByUserId',
-    async(userid) => {
-        const response = await fetchItemsByUserId(userid);
+    async() => {
+        const response = await fetchItemsByUserId();
         return response.data;
     }
   )
@@ -45,8 +46,8 @@ const initialState = {
 
   export const resetCartAsync = createAsyncThunk(
     'cart/resetCart',
-    async (userId) => {
-      const response = await resetCart(userId);
+    async () => {
+      const response = await resetCart();
       // The value we return becomes the `fulfilled` action payload
       return response.data;
     }
@@ -72,9 +73,15 @@ export const cartSlice = createSlice({
     .addCase(fetchItemsByUserIdAsync.pending, (state) => {
         state.status = 'loading';
       })
+      .addCase(fetchItemsByUserIdAsync.rejected, (state, action) => {
+        state.status = 'idle';
+        state.cartLoader = true
+        // state.cartLoaded = true;
+      })
       .addCase(fetchItemsByUserIdAsync.fulfilled, (state, action) => {
         state.status = 'idle';
         state.items = action.payload;
+        state.cartLoader = true
         // state.cartLoaded = true;
       })
       .addCase(updateCartAsync.pending, (state) => {
@@ -85,7 +92,6 @@ export const cartSlice = createSlice({
         // state.items = action.payload;
         const index = state.items.findIndex(item=>item.id===action.payload.id)
         state.items[index] = action.payload
-        // state.cartLoaded = true;
       })
       .addCase(deleteItemFromCartAsync.pending, (state) => {
         state.status = 'loading';
@@ -111,4 +117,6 @@ export const cartSlice = createSlice({
 export const { increment } = cartSlice.actions;
 // export const selectLoggedInUser = (state)=>state.cart.loggedInUser;
 export const selectItems = (state)=>state.cart.items;
+export const selectCartLoaded = (state)=>state.cart.cartLoaded;
+
 export default cartSlice.reducer;

@@ -474,7 +474,7 @@ function ProductGrid({ products,filters }) {
         <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
           {products.map((product) => (
             <div>
-            <Link to={`/product-detail/${product.id}`} key={product.id}>
+            <Link to={`/product-detail/${product?._id}`} key={product?._id}>
               {/* console.log('as') */}
               <div  className="group relative">
                 <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
@@ -509,7 +509,7 @@ function ProductGrid({ products,filters }) {
             </Link>
             <div className="mt-5">
                 <Link
-                  to={`/admin/product-form/edit/${product.id}`}
+                  to={`/admin/product-form/edit/${product?._id}`}
                   className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
                   Edit Product

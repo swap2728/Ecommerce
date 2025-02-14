@@ -1,12 +1,12 @@
 import { useState ,useEffect} from 'react'
 import { StarIcon } from '@heroicons/react/20/solid'
 import { Radio, RadioGroup } from '@headlessui/react'
-import {  selectProductById , fetchProductByIdAsync } from '../ProductSlice'
+import {  selectProductById , fetchProductByIdAsync , selectProductListStatus } from '../ProductSlice'
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { addToCartAsync, selectItems } from '../../cart/cartSlice';
 import { selectLoggedInUser } from '../../auth/authSlice';
-
+import { Grid } from 'react-loader-spinner';
 
 const  colors= [
     { name: 'White', class: 'bg-white', selectedClass: 'ring-gray-400' },
@@ -39,17 +39,21 @@ function classNames(...classes) {
 export default function ProductDetail() {
   const [selectedColor, setSelectedColor] = useState(colors[0])
   const [selectedSize, setSelectedSize] = useState(sizes[2])
-  const product = useSelector(selectProductById)[0];
+  const product = useSelector(selectProductById);
   const dispatch = useDispatch();
   const items = useSelector(selectItems);
   const params = useParams();
   const user = useSelector(selectLoggedInUser)
+  const status = useSelector(selectProductListStatus);
+  // const alert = useAlert()
   function handleCart(e){
     e.preventDefault();
-    if( items.findIndex(item=>item.productId===product.id)<0){
-      const newItem = {...product, productId:product.id,quantity:1,user:user.id};
-      delete newItem['id'];
+    if( items.findIndex(item=>item.product._id===product._id)<0){
+      const newItem = {quantity:1,product:product._id};
+      // delete newItem['id'];
+      
       dispatch( addToCartAsync(newItem))
+      // alert.success(`Product added to cart`)
     }
     else {
       alert('already added')
@@ -57,11 +61,24 @@ export default function ProductDetail() {
   }
 
   useEffect(()=>{
+    // console.log(params.id)
     dispatch(fetchProductByIdAsync(params.id))
+    console.log(product)
   },[dispatch,params.id]);
   return (
     <div className="bg-white">
-        
+        {status === 'loading' ? (
+        <Grid
+          height="80"
+          width="80"
+          color="rgb(79, 70, 229) "
+          ariaLabel="grid-loading"
+          radius="12.5"
+          wrapperStyle={{}}
+          wrapperClass=""
+          visible={true}
+        />
+      ) : null}
       {
         product && (<div className="pt-6">
         <nav aria-label="Breadcrumb">

@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { createOrder , fetchAllOrders ,updateOrder } from './orderAPI';
-import counterSlice from '../counter/counterSlice';
+// import counterSlice from '../counter/counterSlice';
 
 const initialState = {
   orders: [],

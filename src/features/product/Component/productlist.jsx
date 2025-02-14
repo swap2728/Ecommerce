@@ -165,7 +165,7 @@ export default function ProductList() {
   // return (
   useEffect(() => {
     const pagination = { _page: page, _limit: ITEMS_PER_PAGE };
-    dispatch(fetchProductsByFiltersAsync({ filter, sort, pagination }));
+    dispatch(fetchProductsByFiltersAsync({ filter, sort, pagination ,admin:true }));
   }, [dispatch, filter, sort ,page]);
 
   useEffect(()=>{
@@ -176,7 +176,6 @@ export default function ProductList() {
     dispatch(fetchAllBrandsAsync());
     dispatch(fetchAllCategoriesAsync());
   },[]);
-  // fetchAllProductsAsync
   return (
     <div>
       <div className="bg-white">
@@ -188,18 +187,16 @@ export default function ProductList() {
             setMobileFiltersOpen={setMobileFiltersOpen}
             filters={filters}
           ></MobileFilter>
-
           <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-24">
               <h1 className="text-4xl font-bold tracking-tight text-gray-900">
                 New Arrivals
               </h1>
-
               <div className="flex items-center">
                 <Menu as="div" className="relative inline-block text-left">
                   <div>
                     <MenuButton className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
-                      Sort
+                      resort
                       <ChevronDownIcon
                         className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
                         aria-hidden="true"
@@ -488,7 +485,7 @@ function ProductGrid({ products,filters }) {
             
             <div>
               { 
-                !product.deleted && <Link to={`/product-detail/${product.id}`} key={product.id}>
+                <Link to={`/product-detail/${product?._id}`} key={product?._id}>
                 {/* console.log('as') */}
                 <div  className="group relative">
                   <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
